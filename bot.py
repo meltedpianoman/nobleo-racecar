@@ -1,6 +1,6 @@
 from typing import Tuple
 from pygame import Vector2, Color
-
+import pygame
 from ...bot import Bot
 from ...linear_math import Transform
 
@@ -40,3 +40,13 @@ class DaBullet(Bot):
             return throttle, 1
         else:
             return throttle, -1
+
+    def draw(self, map_scaled, zoom):
+        return
+        # Draw the simulation on the scaled map
+        # print(f'Simulation: {[p.p for p in self.simulation]}')
+        # pygame.draw.circle(map_scaled, (0, 0, 0), self.position.p * zoom, 10)
+        debugText = "Some Debug Text"
+        my_font = pygame.font.SysFont('Comic Sans MS', 30)
+        text_surface = my_font.render(debugText, False, (0, 0, 0))
+        map_scaled.blit(text_surface, (0, 0))
