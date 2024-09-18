@@ -1,6 +1,5 @@
 from typing import Tuple
-
-from pygame import Vector2
+from pygame import Vector2, Color
 
 from ...bot import Bot
 from ...linear_math import Transform
@@ -14,6 +13,13 @@ class DaBullet(Bot):
     @property
     def contributor(self):
         return "MeltedPianoMan"
+
+    @property
+    def color(self) -> Color:
+        r = 50
+        g = 205
+        b = 50
+        return Color(r, g, b)
 
     def compute_commands(self, next_waypoint: int, position: Transform, velocity: Vector2) -> Tuple:
         target = self.track.lines[next_waypoint]
