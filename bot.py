@@ -3,6 +3,9 @@ from pygame import Vector2, Color
 import pygame
 from ...bot import Bot
 from ...linear_math import Transform
+import socket
+import json
+from ...track import Track
 
 
 class DaBullet(Bot):
@@ -21,7 +24,25 @@ class DaBullet(Bot):
         b = 50
         return Color(r, g, b)
 
+    def __init__(self, track: Track):
+        super().__init__(track)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.server_address = ('127.0.0.1', 12345)
+
+    def __del__(self):
+        self.sock.close()
+
+    def send_plotjuggler_data(self):
+
+        data = {
+            "x": self.position.p.x,
+            "y": self.position.p.y,
+        }
+        self.sock.sendto(json.dumps(data).encode('utf-8'), self.server_address)
+
     def compute_commands(self, next_waypoint: int, position: Transform, velocity: Vector2) -> Tuple:
+        self.position = position
+
         target = self.track.lines[next_waypoint]
         # calculate the target in the frame of the robot
         target = position.inverse() * target
@@ -37,9 +58,12 @@ class DaBullet(Bot):
 
         # calculate the steering
         if angle > 0:
-            return throttle, 1
+            steer = 1
         else:
-            return throttle, -1
+            steer = -1
+
+        self.send_plotjuggler_data()
+        return throttle, steer
 
     def draw(self, map_scaled, zoom):
         return
